@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sondu — Encomendar a Sua Música</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --champagne: #C9A86C;
+            --blush: #E8C4C4;
+            --sky: #A8C5E2;
+            --lavender: #C5B8D4;
+            --ivory: #FAF8F5;
+            --cream: #F5F0EB;
+            --charcoal: #2D2A26;
+            --warm-gray: #6B6560;
+            --muted: #9A958F;
+            --transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-soft: 0 4px 24px rgba(45, 42, 38, 0.08);
+            --shadow-lift: 0 12px 48px rgba(45, 42, 38, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--ivory);
+            color: var(--charcoal);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header a {
+            text-decoration: none;
+            color: var(--charcoal);
+            font-size: 24px;
+            font-weight: 300;
+        }
+
+        .header .back {
+            font-size: 14px;
+            color: var(--warm-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            max-width: 600px;
+            margin: 0 auto 48px;
+            padding: 0 24px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--cream);
+            transform: translateY(-50%);
+        }
+
+        .progress-steps::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--champagne), var(--blush));
+            transform: translateY(-50%);
+            transition: width 0.6s ease;
+            width: 0%;
+        }
+
+        .progress-steps.step-1::after { width: 0%; }
+        .progress-steps.step-2::after { width: 33%; }
+        .progress-steps.step-3::after { width: 66%; }
+        .progress-steps.step-4::after { width: 100%; }
+
+        .progress-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+        }
+
+        .progress-dot.active {
+            border-color: var(--champagne);
+            color: var(--champagne);
+            box-shadow: 0 0 0 4px rgba(201, 168, 108, 0.15);
+        }
+
+        .progress-dot.done {
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            border-color: var(--champagne);
+            color: white;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+            width: 36px;
+            letter-spacing: 0.02em;
+        }
+
+        .progress-label.active {
+            color: var(--champagne);
+            font-weight: 500;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+
+        .step-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: clamp(28px, 5vw, 40px);
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .step-subtitle {
+            text-align: center;
+            color: var(--warm-gray);
+            margin-bottom: 48px;
+            font-size: 16px;
+        }
+
+        /* Occasion Cards */
+        .occasion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .occasion-option {
+            background: white;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 28px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .occasion-option:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lift);
+        }
+
+        .occasion-option.selected {
+            border-color: var(--champagne);
+            background: linear-gradient(135deg, rgba(201, 168, 108, 0.05), rgba(232, 196, 196, 0.05));
+        }
+
+        .occasion-option .icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 12px;
+        }
+
+        .occasion-option .icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--champagne);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .occasion-option.selected .icon svg {
+            stroke: var(--charcoal);
+        }
+
+        .occasion-option h3 {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Package Cards */
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .package-grid {
+                grid-template-columns: 1fr;
+                max-width: 350px;
+                margin: 0 auto;
+            }
+        }
+
+        .package-option {
+            background: white;
+            border: 2px solid transparent;
+            border-radius: 24px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+
+        .package-option:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lift);
+        }
+
+        .package-option.selected {
+            border-color: var(--champagne);
+            background: linear-gradient(135deg, rgba(201, 168, 108, 0.05), rgba(232, 196, 196, 0.05));
+        }
+
+        .package-option .popular-tag {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 16px;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 100px;
+        }
+
+        .package-option h3 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .package-option .price-old {
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: line-through;
+        }
+
+        .package-option .price {
+            font-size: 36px;
+            font-weight: 300;
+            color: var(--champagne);
+            margin-bottom: 4px;
+        }
+
+        .package-option .duration {
+            font-size: 13px;
+            color: var(--warm-gray);
+            margin-bottom: 16px;
+        }
+
+        .package-features {
+            list-style: none;
+            text-align: left;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 16px;
+        }
+
+        .package-features li {
+            font-size: 13px;
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .package-features li svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--champagne);
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--charcoal);
+        }
+
+        .form-group label span {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: var(--charcoal);
+            background: white;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--champagne);
+            box-shadow: 0 0 0 3px rgba(201, 168, 108, 0.15);
+        }
+
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mood Tags */
+        .mood-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .mood-tag {
+            padding: 8px 18px;
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 100px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+            color: var(--charcoal);
+        }
+
+        .mood-tag:hover {
+            border-color: var(--champagne);
+        }
+
+        .mood-tag.selected {
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            color: white;
+            border-color: var(--champagne);
+        }
+
+        /* Navigation Buttons */
+        .form-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 28px;
+            background: transparent;
+            color: var(--warm-gray);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-back:hover {
+            border-color: var(--charcoal);
+            color: var(--charcoal);
+        }
+
+        .btn-next {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            color: white;
+            border: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 24px rgba(201, 168, 108, 0.3);
+            font-family: 'Inter', sans-serif;
+            margin-left: auto;
+        }
+
+        .btn-next:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 40px rgba(201, 168, 108, 0.4);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-next svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Summary */
+        .summary-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 15px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row .label {
+            color: var(--warm-gray);
+        }
+
+        .summary-row .value {
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 24px 0 0;
+            margin-top: 16px;
+            border-top: 2px solid var(--champagne);
+            font-size: 20px;
+        }
+
+        .summary-total .price {
+            font-weight: 500;
+            color: var(--champagne);
+            font-size: 28px;
+        }
+
+        .secure-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .secure-note svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--muted);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Error message */
+        .error-msg {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .form-group.error input,
+        .form-group.error textarea {
+            border-color: #e74c3c;
+        }
+
+        .form-group.error .error-msg {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <a href="index.html">Sondu</a>
+        <a href="index.html" class="back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Voltar ao site
+        </a>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-container">
+        <div class="progress-steps step-1" id="progressSteps">
+            <div class="progress-dot active" id="dot1">1</div>
+            <div class="progress-dot" id="dot2">2</div>
+            <div class="progress-dot" id="dot3">3</div>
+            <div class="progress-dot" id="dot4">4</div>
+        </div>
+        <div class="progress-labels">
+            <span class="progress-label active" id="label1">Ocasião</span>
+            <span class="progress-label" id="label2">Pacote</span>
+            <span class="progress-label" id="label3">História</span>
+            <span class="progress-label" id="label4">Resumo</span>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container">
+
+        <!-- STEP 1: Occasion -->
+        <div class="step-section active" id="step1">
+            <h2 class="step-title">Qual é a ocasião?</h2>
+            <p class="step-subtitle">Escolha o momento que quer eternizar em música.</p>
+            <div class="occasion-grid" id="occasionGrid">
+                <div class="occasion-option" data-occasion="Casamento">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                    <h3>Casamento</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Aniversário">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2v4M8 4v2M16 4v2"/><rect x="4" y="8" width="16" height="13" rx="2"/><path d="M4 13h16"/><path d="M12 8v13"/></svg></div>
+                    <h3>Aniversário</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Batizado">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+                    <h3>Batizado</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Aniversário de Casamento">
+                    <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+                    <h3>Aniversário de Casamento</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Noivado">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+                    <h3>Noivado</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Revelação do Bebé">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M5 12c0 3.87 3.13 7 7 7s7-3.13 7-7"/><path d="M9 22h6"/><path d="M12 19v3"/></svg></div>
+                    <h3>Revelação do Bebé</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Homenagem">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div>
+                    <h3>Homenagem</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Formatura">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+                    <h3>Formatura</h3>
+                </div>
+                <div class="occasion-option" data-occasion="História de Amor">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg></div>
+                    <h3>História de Amor</h3>
+                </div>
+                <div class="occasion-option" data-occasion="Outro">
+                    <div class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div>
+                    <h3>O Seu Momento</h3>
+                </div>
+            </div>
+            <div class="form-nav">
+                <div></div>
+                <button class="btn-next" id="btn1" disabled>
+                    Seguinte
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Package -->
+        <div class="step-section" id="step2">
+            <h2 class="step-title">Escolha o seu pacote</h2>
+            <p class="step-subtitle">Todos os pacotes incluem uma canção 100% personalizada.</p>
+            <div class="package-grid" id="packageGrid">
+                <div class="package-option" data-package="Essência" data-price="59" data-link="https://buy.stripe.com/test_dRm3cvgaecSqfzx316grS00">
+                    <h3>Essência</h3>
+                    <div class="price-old">€99</div>
+                    <div class="price">€59</div>
+                    <div class="duration">Canção de 2 minutos</div>
+                    <ul class="package-features">
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> 1 ronda de revisão</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Entrega digital</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Áudio de alta qualidade</li>
+                    </ul>
+                </div>
+                <div class="package-option" data-package="Tesouro" data-price="119" data-link="https://buy.stripe.com/test_7sY5kDaPU5pY2MLgRWgrS03">
+                    <span class="popular-tag">Mais Popular</span>
+                    <h3>Tesouro</h3>
+                    <div class="price-old">€199</div>
+                    <div class="price">€119</div>
+                    <div class="duration">Canção de 3 minutos</div>
+                    <ul class="package-features">
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> 3 rondas de revisão</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Versão instrumental</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Embalagem premium</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> USB físico e certificado</li>
+                    </ul>
+                </div>
+                <div class="package-option" data-package="Legado" data-price="239" data-link="https://buy.stripe.com/test_28EbJ1f6a05E2ML1X2grS04">
+                    <h3>Legado</h3>
+                    <div class="price-old">€399</div>
+                    <div class="price">€239</div>
+                    <div class="duration">Canção de 4 minutos</div>
+                    <ul class="package-features">
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Revisões ilimitadas</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Todas as versões instrumentais</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Caixa de presente de luxo</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Chamada com compositor</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Envio internacional</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-nav">
+                <button class="btn-back" onclick="goToStep(1)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Voltar
+                </button>
+                <button class="btn-next" id="btn2" disabled>
+                    Seguinte
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 3: Story -->
+        <div class="step-section" id="step3">
+            <h2 class="step-title">Conte-nos a sua história</h2>
+            <p class="step-subtitle">Quanto mais detalhes partilhar, mais especial será a sua canção.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Para quem é a canção? *</label>
+                    <input type="text" id="forWho" placeholder="Ex: Sara e Tiago" required>
+                    <span class="error-msg">Por favor preencha este campo</span>
+                </div>
+                <div class="form-group">
+                    <label>Data do evento <span>(opcional)</span></label>
+                    <input type="date" id="eventDate">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Conte-nos a história *</label>
+                <textarea id="story" placeholder="Descreva o momento, as memórias, os sentimentos... Tudo o que quer que a canção transmita." required></textarea>
+                <span class="error-msg">Por favor partilhe a sua história</span>
+            </div>
+
+            <div class="form-group">
+                <label>Que emoção quer transmitir?</label>
+                <div class="mood-tags" id="moodTags">
+                    <span class="mood-tag" data-mood="Alegria">☀️ Alegria</span>
+                    <span class="mood-tag" data-mood="Romance">💕 Romance</span>
+                    <span class="mood-tag" data-mood="Nostalgia">🌅 Nostalgia</span>
+                    <span class="mood-tag" data-mood="Gratidão">🙏 Gratidão</span>
+                    <span class="mood-tag" data-mood="Celebração">🎉 Celebração</span>
+                    <span class="mood-tag" data-mood="Saudade">💙 Saudade</span>
+                    <span class="mood-tag" data-mood="Esperança">🌟 Esperança</span>
+                    <span class="mood-tag" data-mood="Ternura">🤗 Ternura</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Preferência musical <span>(opcional)</span></label>
+                <select id="musicStyle">
+                    <option value="">Deixo ao critério do compositor</option>
+                    <option value="Acústico / Folk">Acústico / Folk</option>
+                    <option value="Pop contemporâneo">Pop contemporâneo</option>
+                    <option value="Clássico / Piano">Clássico / Piano</option>
+                    <option value="Fado / Tradicional">Fado / Tradicional</option>
+                    <option value="Jazz / Soul">Jazz / Soul</option>
+                    <option value="Cinematográfico / Orquestral">Cinematográfico / Orquestral</option>
+                    <option value="R&B / Suave">R&B / Suave</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Há alguma frase ou palavras que gostaria de incluir? <span>(opcional)</span></label>
+                <textarea id="specialWords" placeholder="Ex: 'Para sempre juntos', um verso especial, um nome..." style="min-height: 80px;"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>O seu nome *</label>
+                    <input type="text" id="clientName" placeholder="Nome completo" required>
+                    <span class="error-msg">Por favor insira o seu nome</span>
+                </div>
+                <div class="form-group">
+                    <label>O seu email *</label>
+                    <input type="email" id="clientEmail" placeholder="email@exemplo.com" required>
+                    <span class="error-msg">Por favor insira um email válido</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Telemóvel <span>(opcional)</span></label>
+                <input type="tel" id="clientPhone" placeholder="+351 912 345 678">
+            </div>
+
+            <div class="form-nav">
+                <button class="btn-back" onclick="goToStep(2)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Voltar
+                </button>
+                <button class="btn-next" id="btn3">
+                    Ver resumo
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 4: Summary -->
+        <div class="step-section" id="step4">
+            <h2 class="step-title">Resumo da encomenda</h2>
+            <p class="step-subtitle">Confirme os detalhes antes de prosseguir para o pagamento.</p>
+
+            <div class="summary-card">
+                <div class="summary-row">
+                    <span class="label">Ocasião</span>
+                    <span class="value" id="sumOccasion"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Pacote</span>
+                    <span class="value" id="sumPackage"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Para quem</span>
+                    <span class="value" id="sumForWho"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Data do evento</span>
+                    <span class="value" id="sumDate"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Emoção</span>
+                    <span class="value" id="sumMood"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Estilo musical</span>
+                    <span class="value" id="sumStyle"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Cliente</span>
+                    <span class="value" id="sumClient"></span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span class="price" id="sumTotal"></span>
+                </div>
+            </div>
+
+            <div class="form-nav">
+                <button class="btn-back" onclick="goToStep(3)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Voltar
+                </button>
+                <button class="btn-next" id="btnPay" onclick="goToPayment()">
+                    Pagar agora
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </button>
+            </div>
+
+            <div class="secure-note">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Pagamento seguro via Stripe. Os seus dados estão protegidos.
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // State
+        let selectedOccasion = '';
+        let selectedPackage = '';
+        let selectedPrice = '';
+        let selectedLink = '';
+        let selectedMoods = [];
+
+        // Step 1: Occasion selection
+        document.querySelectorAll('.occasion-option').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.occasion-option').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedOccasion = card.dataset.occasion;
+                document.getElementById('btn1').disabled = false;
+            });
+        });
+
+        document.getElementById('btn1').addEventListener('click', () => {
+            if (selectedOccasion) goToStep(2);
+        });
+
+        // Step 2: Package selection
+        document.querySelectorAll('.package-option').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.package-option').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedPackage = card.dataset.package;
+                selectedPrice = card.dataset.price;
+                selectedLink = card.dataset.link;
+                document.getElementById('btn2').disabled = false;
+            });
+        });
+
+        document.getElementById('btn2').addEventListener('click', () => {
+            if (selectedPackage) goToStep(3);
+        });
+
+        // Step 3: Mood tags
+        document.querySelectorAll('.mood-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                tag.classList.toggle('selected');
+                const mood = tag.dataset.mood;
+                if (selectedMoods.includes(mood)) {
+                    selectedMoods = selectedMoods.filter(m => m !== mood);
+                } else {
+                    selectedMoods.push(mood);
+                }
+            });
+        });
+
+        // Step 3: Validate and go to summary
+        document.getElementById('btn3').addEventListener('click', () => {
+            let valid = true;
+            const fields = [
+                { id: 'forWho', required: true },
+                { id: 'story', required: true },
+                { id: 'clientName', required: true },
+                { id: 'clientEmail', required: true, type: 'email' }
+            ];
+
+            fields.forEach(field => {
+                const el = document.getElementById(field.id);
+                const group = el.closest('.form-group');
+                const value = el.value.trim();
+
+                if (field.required && !value) {
+                    group.classList.add('error');
+                    valid = false;
+                } else if (field.type === 'email' && value && !value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                    group.classList.add('error');
+                    valid = false;
+                } else {
+                    group.classList.remove('error');
+                }
+            });
+
+            if (valid) {
+                populateSummary();
+                goToStep(4);
+            }
+        });
+
+        // Remove error on input
+        document.querySelectorAll('.form-group input, .form-group textarea').forEach(el => {
+            el.addEventListener('input', () => {
+                el.closest('.form-group').classList.remove('error');
+            });
+        });
+
+        // Populate summary
+        function populateSummary() {
+            document.getElementById('sumOccasion').textContent = selectedOccasion;
+            document.getElementById('sumPackage').textContent = selectedPackage;
+            document.getElementById('sumForWho').textContent = document.getElementById('forWho').value;
+            document.getElementById('sumDate').textContent = document.getElementById('eventDate').value || 'Não especificado';
+            document.getElementById('sumMood').textContent = selectedMoods.length ? selectedMoods.join(', ') : 'Não especificado';
+            document.getElementById('sumStyle').textContent = document.getElementById('musicStyle').value || 'Ao critério do compositor';
+            document.getElementById('sumClient').textContent = document.getElementById('clientName').value + ' · ' + document.getElementById('clientEmail').value;
+            document.getElementById('sumTotal').textContent = '€' + selectedPrice;
+        }
+
+        // Navigate steps
+        function goToStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+
+            // Update progress
+            const steps = document.getElementById('progressSteps');
+            steps.className = 'progress-steps step-' + step;
+
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById('dot' + i);
+                const label = document.getElementById('label' + i);
+                dot.classList.remove('active', 'done');
+                label.classList.remove('active');
+
+                if (i < step) {
+                    dot.classList.add('done');
+                    dot.innerHTML = '✓';
+                } else if (i === step) {
+                    dot.classList.add('active');
+                    label.classList.add('active');
+                    dot.innerHTML = i;
+                } else {
+                    dot.innerHTML = i;
+                }
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Go to payment
+        function goToPayment() {
+            // Send form data via email (using formsubmit.co)
+            const formData = {
+                ocasiao: selectedOccasion,
+                pacote: selectedPackage + ' (€' + selectedPrice + ')',
+                para_quem: document.getElementById('forWho').value,
+                data_evento: document.getElementById('eventDate').value || 'Não especificado',
+                historia: document.getElementById('story').value,
+                emocao: selectedMoods.join(', ') || 'Não especificado',
+                estilo_musical: document.getElementById('musicStyle').value || 'Ao critério do compositor',
+                palavras_especiais: document.getElementById('specialWords').value || 'Nenhuma',
+                nome_cliente: document.getElementById('clientName').value,
+                email_cliente: document.getElementById('clientEmail').value,
+                telefone: document.getElementById('clientPhone').value || 'Não fornecido'
+            };
+
+            // Send to formsubmit.co (replace YOUR_EMAIL with actual email)
+            fetch('https://formsubmit.co/ajax/p.motagomes@gmail.com', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(formData)
+            }).then(() => {
+                window.location.href = selectedLink;
+            }).catch(() => {
+                // Even if form submission fails, redirect to payment
+                window.location.href = selectedLink;
+            });
+        }
+
+        // Handle URL params (pre-select package from main page)
+        const urlParams = new URLSearchParams(window.location.search);
+        const preselect = urlParams.get('pacote');
+        if (preselect) {
+            const card = document.querySelector(`.package-option[data-package="${preselect}"]`);
+            if (card) {
+                card.classList.add('selected');
+                selectedPackage = card.dataset.package;
+                selectedPrice = card.dataset.price;
+                selectedLink = card.dataset.link;
+            }
+        }
+    </script>
+
+</body>
+</html>
