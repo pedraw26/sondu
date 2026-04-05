@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sondu — Música Personalizada para os Momentos da Vida</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --champagne: #C9A86C;
+            --blush: #E8C4C4;
+            --sky: #A8C5E2;
+            --lavender: #C5B8D4;
+            --ivory: #FAF8F5;
+            --cream: #F5F0EB;
+            --charcoal: #2D2A26;
+            --warm-gray: #6B6560;
+            --muted: #9A958F;
+            --transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-soft: 0 4px 24px rgba(45, 42, 38, 0.08);
+            --shadow-lift: 0 12px 48px rgba(45, 42, 38, 0.12);
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(201, 168, 108, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--ivory);
+            color: var(--charcoal);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Typography Scale */
+        .hero-title {
+            font-size: clamp(48px, 10vw, 120px);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        .section-title {
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .card-title {
+            font-size: clamp(20px, 2vw, 28px);
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        .body-large {
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .caption {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--warm-gray);
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        section {
+            padding: 120px 0;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 80px 0;
+            }
+            .container {
+                padding: 0 24px;
+            }
+        }
+
+        /* Buttons */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            color: white;
+            border: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 4px 24px rgba(201, 168, 108, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 40px rgba(201, 168, 108, 0.4);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: transparent;
+            color: var(--charcoal);
+            border: 1.5px solid var(--champagne);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(201, 168, 108, 0.1);
+        }
+
+        /* ============ HERO SECTION ============ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, var(--blush), var(--lavender));
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--sky), var(--lavender));
+            bottom: -150px;
+            left: -100px;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .hero-caption {
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards;
+            animation-delay: 0.2s;
+        }
+
+        .hero-title {
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards;
+            animation-delay: 0.4s;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--warm-gray);
+            margin-bottom: 48px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards;
+            animation-delay: 0.6s;
+        }
+
+        .hero-cta {
+            opacity: 0;
+            animation: fadeUp 1s ease forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards, pulse 2s ease-in-out infinite;
+            animation-delay: 1.2s, 2s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .scroll-indicator span {
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--muted);
+        }
+
+        /* ============ OCCASIONS SECTION ============ */
+        .occasions {
+            background: var(--cream);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-header .caption {
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--warm-gray);
+            margin-top: 16px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .occasions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 24px;
+        }
+
+        .occasion-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 24px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .occasion-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .occasion-card:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: var(--shadow-lift);
+        }
+
+        .occasion-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .occasion-card .icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .occasion-card .icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--champagne);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .occasion-card h3 {
+            position: relative;
+            z-index: 1;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .occasion-card:hover .icon svg {
+            stroke: var(--charcoal);
+        }
+
+        /* ============ HOW IT WORKS ============ */
+        .how-it-works {
+            background: var(--ivory);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blush), var(--sky), var(--lavender));
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .steps {
+                grid-template-columns: 1fr;
+                gap: 64px;
+            }
+            .steps::before {
+                display: none;
+            }
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number span {
+            font-size: 32px;
+            font-weight: 300;
+            color: var(--champagne);
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 24px;
+        }
+
+        .step-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--charcoal);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .step h3 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .step p {
+            color: var(--warm-gray);
+            font-size: 15px;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        /* ============ SHOWCASE SECTION ============ */
+        .showcase {
+            background: linear-gradient(180deg, var(--cream) 0%, var(--ivory) 100%);
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .story-card {
+            position: relative;
+            border-radius: 32px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+        }
+
+        .story-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .story-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(45, 42, 38, 0.8) 100%);
+            transition: var(--transition);
+        }
+
+        .story-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+z-index: 1;
+            color: white;
+        }
+
+        .story-content .occasion-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .story-content h3 {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .story-content p {
+            opacity: 0.8;
+            font-size: 15px;
+        }
+
+        .story-card:first-child {
+            grid-row: span 2;
+            aspect-ratio: auto;
+        }
+
+        @media (max-width: 768px) {
+            .story-card:first-child {
+                grid-row: span 1;
+                aspect-ratio: 4/3;
+            }
+        }
+
+        /* ============ AUDIO SECTION ============ */
+        .audio-section {
+            background: var(--charcoal);
+            color: white;
+        }
+
+        .audio-section .section-header .caption {
+            color: var(--champagne);
+        }
+
+        .audio-section .section-header h2 {
+            color: white;
+        }
+
+        .audio-player {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            padding: 48px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .player-album {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 32px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+        }
+
+        .audio-player:hover .player-album {
+transform: rotate(-2deg);
+        }
+
+        .player-album img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .player-info {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .player-info h3 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .player-info p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .waveform {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            height: 48px;
+            margin-bottom: 24px;
+        }
+
+        .waveform-bar {
+            width: 4px;
+            background: linear-gradient(180deg, var(--champagne), var(--blush));
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+
+        .waveform.active .waveform-bar {
+            animation: wave 0.5s ease-in-out infinite;
+        }
+
+        .waveform.active .waveform-bar:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.5); }
+        }
+
+        .player-progress {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .player-progress span {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            min-width: 40px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--champagne), var(--blush));
+            border-radius: 2px;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 16px rgba(201, 168, 108, 0.5);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .control-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .control-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .control-btn.play {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            box-shadow: 0 8px 32px rgba(201, 168, 108, 0.4);
+        }
+
+        .control-btn.play svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .control-btn.play:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+        }
+
+        /* ============ PRICING SECTION ============ */
+        .pricing {
+            background: var(--cream);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 32px;
+            padding: 48px 40px;
+            position: relative;
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lift);
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(135deg, rgba(201, 168, 108, 0.1), rgba(232, 196, 196, 0.1));
+            border: 2px solid var(--champagne);
+        }
+
+        .pricing-card.featured::before {
+            content: 'Mais Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 100px;
+        }
+
+        .pricing-card h3 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .pricing-card .price {
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--champagne);
+            margin-bottom: 8px;
+        }
+
+        .pricing-card .price span {
+            font-size: 16px;
+            color: var(--warm-gray);
+        }
+
+        .pricing-card .description {
+            color: var(--warm-gray);
+            font-size: 14px;
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 40px;
+            flex: 1;
+        }
+
+        .pricing-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            font-size: 15px;
+        }
+
+        .pricing-features li svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--champagne);
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .pricing-card .btn-primary {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ============ TESTIMONIALS ============ */
+        .testimonials {
+            background: var(--ivory);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        @media (max-width: 900px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            font-size: 120px;
+            font-family: 'Georgia', serif;
+            color: var(--champagne);
+            opacity: 0.1;
+            line-height: 1;
+        }
+
+        .testimonial-quote {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .testimonial-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .testimonial-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .testimonial-info h4{
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .testimonial-info p {
+            font-size: 13px;
+            color: var(--warm-gray);
+        }
+
+        /* ============ FINAL CTA ============ */
+        .final-cta {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, var(--ivory) 0%, var(--cream) 100%);
+        }
+
+        .final-cta .orb-1 {
+            top: -300px;
+        }
+
+        .final-cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+        }
+
+        .final-cta h2 {
+            margin-bottom: 24px;
+        }
+
+        .final-cta p {
+            color: var(--warm-gray);
+            font-size: 18px;
+            margin-bottom: 48px;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ============ FOOTER ============ */
+        footer {
+            background: var(--charcoal);
+            color: white;
+            padding: 80px 0 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr repeat(3, 1fr);
+            gap: 64px;
+            margin-bottom: 64px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            max-width: 280px;
+        }
+
+        .footer-links h4 {
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            color: var(--champagne);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+
+        /* ============ ANIMATIONS ============ */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+        <div class="hero-content">
+            <p class="caption hero-caption">Música Personalizada para os Momentos da Vida</p>
+            <h1 class="hero-title">Transformamos momentos<br>em música</h1>
+            <p class="hero-subtitle">Criamos canções personalizadas que capturam a emoção das suas memórias mais preciosas, transformando-as em melodias eternas.</p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn-primary">
+                    Crie a sua música
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Explorar</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- OCCASIONS SECTION -->
+    <section class="occasions">
+        <div class="container">
+            <div class="section-header">
+                <p class="caption">Cada momento merece a sua própria canção</p>
+                <h2 class="section-title">O que podemos criar para si?</h2>
+                <p>De casamentos a homenagens, cada marco merece um tributo único.</p>
+            </div>
+            <div class="occasions-grid">
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </div>
+                    <h3>Casamento</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <path d="M12 3c1.5 0 3 1 3 3s-1.5 3-3 3-3-1-3-3 1.5-3 3-3z"/>
+                            <path d="M12 12a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/>
+                            <path d="M3 18h18"/>
+                        </svg>
+                    </div>
+                    <h3>Aniversário</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3>Batizado</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h3>Aniversário de Casamento</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <path d="M22 4L12 14.01l-3-3"/>
+                        </svg>
+                    </div>
+                    <h3>Noivado</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                            <path d="M14.5 9a2.5 2.5 0 1 0-5 0v2a2.5 2.5 0 1 0 5 0V9z"/>
+                            <path d="M9 9v2"/>
+                            <path d="M15 9v2"/>
+                            <path d="M9 15h6"/>
+                        </svg>
+                    </div>
+                    <h3>Revelação do Bebé</h3>
+                </div>
+<div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            <path d="M12 8v8"/>
+                            <path d="M8 12h8"/>
+                        </svg>
+                    </div>
+                    <h3>Homenagem</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        </svg>
+                    </div>
+                    <h3>Formatura</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <path d="M20 8v6M23 11h-6"/>
+                        </svg>
+                    </div>
+                    <h3>História de Amor</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 18V5l12-2v13"/>
+                            <circle cx="6" cy="18" r="3"/>
+                            <circle cx="18" cy="16" r="3"/>
+                        </svg>
+                    </div>
+                    <h3>Hino Pessoal</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 12v10H4V12"/>
+                            <path d="M2 7h20v5H2z"/>
+                            <path d="M12 22V7"/>
+                            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                        </svg>
+                    </div>
+                    <h3>Presente de Luxo</h3>
+                </div>
+                <div class="occasion-card fade-in">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <path d="M12 8v8"/>
+                            <path d="M8 12h8"/>
+                        </svg>
+                    </div>
+                    <h3>O Seu Momento</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <p class="caption">Processo simples</p>
+                <h2 class="section-title">Da história à canção</h2>
+            </div>
+            <div class="steps">
+                <div class="step fade-in">
+                    <div class="step-number"><span>01</span></div>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Conte a Sua História</h3>
+                    <p>Partilhe a sua visão, memórias e emoções através da nossa experiência guiada.</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number"><span>02</span></div>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 18V5l12-2v13"/>
+                            <circle cx="6" cy="18" r="3"/>
+                            <circle cx="18" cy="16" r="3"/>
+                        </svg>
+                    </div>
+                    <h3>Nós Compomos</h3>
+                    <p>Os nossos compositores criam uma melodia única que captura a essência da sua história.</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number"><span>03</span></div>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3>Receba a Sua Música</h3>
+                    <p>Receba a sua composição finalizada, apresentada com uma experiência premium.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EMOTIONAL SHOWCASE -->
+    <section class="showcase">
+        <div class="container">
+            <div class="section-header">
+                <p class="caption">Histórias reais</p>
+                <h2 class="section-title">Canções feitas com amor</h2>
+            </div>
+            <div class="showcase-grid">
+                <div class="story-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Casal de noivos" loading="lazy">
+                    <div class="story-content">
+                        <span class="occasion-tag">Casamento</span>
+                        <h3>Para a Sara & o Tiago</h3>
+                        <p>Uma carta de amor em melodia</p>
+                    </div>
+                </div>
+                <div class="story-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80" alt="Celebração" loading="lazy">
+                    <div class="story-content">
+                        <span class="occasion-tag">Aniversário</span>
+                        <h3>Para a avó Maria</h3>
+                        <p>80 anos de memórias</p>
+                    </div>
+                </div>
+                <div class="story-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80" alt="Revelação do bebé" loading="lazy">
+                    <div class="story-content">
+                        <span class="occasion-tag">Revelação do Bebé</span>
+                        <h3>Para a família Santos</h3>
+                        <p>A chegada da pequena Emma</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AUDIO EXPERIENCE -->
+    <section class="audio-section">
+        <div class="container">
+            <div class="section-header">
+                <p class="caption">Ouça a qualidade</p>
+                <h2 class="section-title">Sinta a magia</h2>
+            </div>
+            <div class="audio-player fade-in">
+                <div class="player-album">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80" alt="Capa do álbum">
+                </div>
+                <div class="player-info">
+                    <h3>Momentos Eternos</h3>
+                    <p>Composta para o casamento da Ana & do Miguel</p>
+                </div>
+                <div class="waveform" id="waveform">
+                    <div class="waveform-bar" style="height: 24px;"></div>
+                    <div class="waveform-bar" style="height: 32px;"></div>
+                    <div class="waveform-bar" style="height: 28px;"></div>
+                    <div class="waveform-bar" style="height: 40px;"></div>
+                    <div class="waveform-bar" style="height: 36px;"></div>
+                    <div class="waveform-bar" style="height: 44px;"></div>
+                    <div class="waveform-bar" style="height: 48px;"></div>
+                    <div class="waveform-bar" style="height: 40px;"></div>
+                    <div class="waveform-bar" style="height: 36px;"></div>
+                    <div class="waveform-bar" style="height: 44px;"></div>
+                    <div class="waveform-bar" style="height: 48px;"></div>
+                    <div class="waveform-bar" style="height: 40px;"></div>
+                    <div class="waveform-bar" style="height: 36px;"></div>
+                    <div class="waveform-bar" style="height: 28px;"></div>
+                    <div class="waveform-bar" style="height: 32px;"></div>
+                    <div class="waveform-bar" style="height: 24px;"></div>
+                    <div class="waveform-bar" style="height: 20px;"></div>
+                    <div class="waveform-bar" style="height: 28px;"></div>
+                    <div class="waveform-bar" style="height: 36px;"></div>
+                    <div class="waveform-bar" style="height: 32px;"></div>
+                    <div class="waveform-bar" style="height: 24px;"></div>
+                    <div class="waveform-bar" style="height: 28px;"></div>
+                    <div class="waveform-bar" style="height: 36px;"></div>
+                    <div class="waveform-bar" style="height: 44px;"></div>
+                    <div class="waveform-bar" style="height: 40px;"></div>
+                    <div class="waveform-bar" style="height: 32px;"></div>
+                    <div class="waveform-bar" style="height: 24px;"></div>
+                    <div class="waveform-bar" style="height: 28px;"></div>
+                </div>
+                <div class="player-progress">
+                    <span>1:24</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress"></div>
+                    </div>
+                    <span>4:12</span>
+                </div>
+                <div class="player-controls">
+                    <button class="control-btn" aria-label="Anterior">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="19 20 9 12 19 4 19 20"/>
+                            <line x1="5" y1="19" x2="5" y2="5"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn play" id="playBtn" aria-label="Reproduzir">
+                        <svg viewBox="0 0 24 24" id="playIcon">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn" aria-label="Seguinte">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="5 4 15 12 5 20 5 4"/>
+                            <line x1="19" y1="5" x2="19" y2="19"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <p class="caption">Preços transparentes</p>
+                <h2 class="section-title">Escolha a sua experiência</h2>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card fade-in">
+                    <h3>Essência</h3>
+                    <div class="price">€299 <span>/ canção</span></div>
+                    <p class="description">Uma composição de 2 minutos cuidadosamente criada, que captura a emoção do seu momento.</p>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Canção personalizada de 2 minutos
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            1 ronda de revisão
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Entrega digital
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Áudio de alta qualidade
+                        </li>
+                    </ul>
+                    <a href="#contact" class="btn-primary">Começar</a>
+                </div>
+                <div class="pricing-card featured fade-in">
+                    <h3>Tesouro</h3>
+                    <div class="price">€599 <span>/ canção</span></div>
+                    <p class="description">A nossa escolha mais popular. Uma obra-prima de 3 minutos com apresentação premium.</p>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Canção personalizada de 3 minutos
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            3 rondas de revisão
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Versão instrumental
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Embalagem premium
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            USB físico e certificado
+                        </li>
+                    </ul>
+                    <a href="#contact" class="btn-primary">Começar</a>
+                </div>
+                <div class="pricing-card fade-in">
+                    <h3>Legado</h3>
+                    <div class="price">€1.299 <span>/ canção</span></div>
+                    <p class="description">O presente supremo. Uma composição cinematográfica de 5 minutos com total liberdade criativa.</p>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Canção cinematográfica de 5 minutos
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Revisões ilimitadas
+                        </li>
+                        <li>
+                            <svg viewBox="0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Todas as versões instrumentais
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Caixa de presente de luxo
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Chamada pessoal com o compositor
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                            Envio internacional incluído
+                        </li>
+                    </ul>
+                    <a href="#contact" class="btn-primary">Começar</a>
+                </div>
+</div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <p class="caption">Palavras de carinho</p>
+                <h2 class="section-title">Histórias do coração</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-quote">Quando ouvimos a nossa canção de casamento pela primeira vez, ambos chorámos. Capturou tudo o que sentíamos um pelo outro de uma forma que nunca julgámos possível. É um presente sem medida.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Sofia">
+                        </div>
+                        <div class="testimonial-info">
+                            <h4>Sofia & Rafael</h4>
+                            <p>Canção de casamento, Lisboa</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-quote">Encomendei uma canção para o 80.º aniversário da minha mãe. O compositor captou o seu espírito, o seu humor, o seu amor pelo fado. Ela ouve-a todas as manhãs com o café.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Manuel">
+                        </div>
+                        <div class="testimonial-info">
+                            <h4>Manuel Costa</h4>
+                            <p>Homenagem de aniversário, Porto</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-quote">A atenção ao detalhe, a paciência, a arte — a Sondu criou algo verdadeiramente extraordinário para a chegada do nosso bebé. Será a canção de embalar dele para sempre.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Anna">
+                        </div>
+                        <div class="testimonial-info">
+                            <h4>Anna & Tom</h4>
+                            <p>Revelação do bebé, Amesterdão</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta" id="contact">
+        <div class="hero-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+        </div>
+        <div class="final-cta-content">
+            <p class="caption">Pronto para começar?</p>
+            <h2 class="section-title">Comece a sua história</h2>
+            <p>Toda grande canção começa com uma conversa. Conte-nos o seu momento e vamos criar algo inesquecível juntos.</p>
+            <a href="mailto:hello@sondu.studio" class="btn-primary">
+                Crie a sua música
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Sondu</h3>
+                    <p>A criar música personalizada para os momentos mais significativos da vida desde 2019. Sediada em Lisboa, ao serviço do mundo.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Serviços</h4>
+                    <ul>
+                        <li><a href="#">Casamentos</a></li>
+                        <li><a href="#">Aniversários</a></li>
+                        <li><a href="#">Homenagens</a></li>
+                        <li><a href="#">Empresas</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#">A Nossa História</a></li>
+                        <li><a href="#">Compositores</a></li>
+                        <li><a href="#">Diário</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Ligações</h4>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Pinterest</a></li>
+                        <li><a href="#">YouTube</a></li>
+                        <li><a href="#">Spotify</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Sondu. Todos os direitos reservados.</p>
+                <p>Criado com emoção em Lisboa</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Audio player simulation
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const waveform = document.getElementById('waveform');
+        const progress = document.getElementById('progress');
+        let isPlaying = false;
+        let progressValue = 35;
+        let progressInterval;
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            
+            if (isPlaying) {
+                playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                waveform.classList.add('active');
+                
+                progressInterval = setInterval(() => {
+                    progressValue += 0.2;
+                    if (progressValue >= 100) {
+                        progressValue = 0;
+                    }
+                    progress.style.width = progressValue + '%';
+                }, 100);
+            } else {
+                playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+                waveform.classList.remove('active');
+                clearInterval(progressInterval);
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Subtle parallax for orbs
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrolled = window.pageYOffset;
+                    document.querySelectorAll('.orb').forEach((orb, i) => {
+                        const speed = 0.1 + (i * 0.05);
+                        orb.style.transform = `translateY(${scrolled * speed}px)`;
+                    });
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Card tilt effect
+        document.querySelectorAll('.occasion-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
