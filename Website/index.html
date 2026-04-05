@@ -790,6 +790,25 @@ transform: rotate(-2deg);
             color: var(--warm-gray);
         }
 
+        .pricing-card .price-old {
+            font-size: 20px;
+            color: var(--muted);
+            text-decoration: line-through;
+            margin-bottom: 4px;
+        }
+
+        .pricing-card .discount-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, var(--champagne), var(--blush));
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            border-radius: 100px;
+            margin-bottom: 12px;
+        }
+
         .pricing-card .description {
             color: var(--warm-gray);
             font-size: 14px;
@@ -1345,7 +1364,9 @@ transform: rotate(-2deg);
             <div class="pricing-grid">
                 <div class="pricing-card fade-in">
                     <h3>Essência</h3>
-                    <div class="price">€99 <span>/ canção</span></div>
+                    <span class="discount-badge">-40% Lançamento</span>
+                    <div class="price-old">€99</div>
+                    <div class="price">€59 <span>/ canção</span></div>
                     <p class="description">Uma composição de 2 minutos cuidadosamente criada, que captura a emoção do seu momento.</p>
                     <ul class="pricing-features">
                         <li>
@@ -1369,7 +1390,9 @@ transform: rotate(-2deg);
                 </div>
                 <div class="pricing-card featured fade-in">
                     <h3>Tesouro</h3>
-                    <div class="price">€199 <span>/ canção</span></div>
+                    <span class="discount-badge">-40% Lançamento</span>
+                    <div class="price-old">€199</div>
+                    <div class="price">€119 <span>/ canção</span></div>
                     <p class="description">A nossa escolha mais popular. Uma obra-prima de 3 minutos com apresentação premium.</p>
                     <ul class="pricing-features">
                         <li>
@@ -1397,7 +1420,9 @@ transform: rotate(-2deg);
                 </div>
                 <div class="pricing-card fade-in">
                     <h3>Legado</h3>
-                    <div class="price">€399 <span>/ canção</span></div>
+                    <span class="discount-badge">-40% Lançamento</span>
+                    <div class="price-old">€399</div>
+                    <div class="price">€239 <span>/ canção</span></div>
                     <p class="description">O presente supremo. Uma composição cinematográfica de 4 minutos com total liberdade criativa.</p>
                     <ul class="pricing-features">
                         <li>
