@@ -162,6 +162,17 @@
             overflow: hidden;
         }
 
+        .hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.3;
+        }
+
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -1058,6 +1069,9 @@ transform: rotate(-2deg);
     <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-bg">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="https://videos.pexels.com/video-files/8776120/8776120-uhd_2560_1440_25fps.mp4" type="video/mp4">
+            </video>
             <div class="orb orb-1"></div>
             <div class="orb orb-2"></div>
             <div class="orb orb-3"></div>
